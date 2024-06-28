@@ -1,0 +1,14 @@
+[
+  {
+    "color": "brown",
+    "type": "cat",
+    "size": "medium",
+    "name": "Rocky"
+  },
+  {
+    "color": "red",
+    "type": "fox",
+    "size": "medium",
+    "name": "Mizu"
+  }
+]

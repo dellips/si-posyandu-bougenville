@@ -1,0 +1,1 @@
+<a {{ $attributes }} class="{{ $active ? 'text-green-600' : 'hover:text-green-600' }} block border-1 pl-4 -ml-px border-transparent text-sm font-medium text-gray-700" aria-current="{{ $active ? 'page' : false }}">{{ $slot }}</a>
