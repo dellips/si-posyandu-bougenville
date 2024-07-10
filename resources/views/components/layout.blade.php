@@ -8,15 +8,17 @@
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <title>Dashboard</title>
 </head>
-<body class="h-full">
-    <div class=" w-[calc(100%-310px)] ml-[19rem] min-h-screen">
-      <x-navbar></x-navbar>
-      <x-header>{{ $title }}</x-header>
-    <main>
-      <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
-        {{$slot}}
+<body class="h-full bg-white">
+  <x-navbar></x-navbar>
+    <div class="lg:pl-[18.5rem]">
+      <div class="max-w-3x1 mx-auto pt-6 xl:max-w-none xl:ml-0 ">
+        <x-header>{{ $title }}</x-header>
+        <main>
+          <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+            {{$slot}}
+          </div>
+        </main>
       </div>
-    </main>
-  </div>
+    </div>
 </body>
 </html>
