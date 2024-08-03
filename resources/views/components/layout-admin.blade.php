@@ -10,10 +10,10 @@
     <title>{{ $title }}</title>
 </head>
 <body class="h-full bg-gray-100">
-  <x-navbar></x-navbar>
+  <x-navbar-admin></x-navbar-admin>
     <div class="lg:pl-[18.5rem]">
       <div class="max-w-3x1 mx-auto xl:max-w-none xl:ml-0 ">
-        <x-header>{{ $title }}</x-header>
+        <x-header-admin>{{ $title }}</x-header-admin>
         <main>
           <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
             {{$slot}}

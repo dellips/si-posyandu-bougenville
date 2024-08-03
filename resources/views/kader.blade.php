@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout-admin>
     <x-slot:title>{{ $title }}</x-slot:title>
     <section class="m-1 p-8 rounded-md bg-white">
       <p class="font-semibold text-lg uppercase text-green-600">{{ $title }}</p>
@@ -36,4 +36,4 @@
         </tbody>
       </table>
     </section>
-  </x-layout>
+</x-layout-admin>
