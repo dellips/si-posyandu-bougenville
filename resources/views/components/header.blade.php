@@ -45,7 +45,6 @@
               </span>
             </a>
             <div role="menu" x-show="open" class="mt-2 space-y-2 px-7" aria-label="Data">
-              <x-nav-link href="/bumil" :active="request()->is('bumil')" role="menuitem">Ibu Hamil</x-nav-link>
               <x-nav-link href="/ibu" :active="request()->is('ibu')" role="menuitem">Ibu</x-nav-link>
               <x-nav-link href="/balita" :active="request()->is('balita')">Anak</x-nav-link>
               <x-nav-link href="/lansia" :active="request()->is('lansia')">lansia</x-nav-link>

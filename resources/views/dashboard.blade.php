@@ -23,7 +23,7 @@
     </div>
     <div class="flex item-center justify-between p-4 bg-white rounded-md">
       <div>
-        <h6 class="text-sm font-medium tracking-wider text-gray-500 uppercase">Balita</h6>
+        <h6 class="text-sm font-medium tracking-wider text-gray-500 uppercase">Anak</h6>
         <!--masukin jumlah-->
         <span class="font-semibold text-green-600">00</span>
       </div>
@@ -71,5 +71,8 @@
         </tr>
       </tbody>
     </table>
+  </section>
+  <section>
+    <!-- Diagram -->
   </section>
 </x-layout>

@@ -7,6 +7,9 @@
     @vite('resources/css/app.css')
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('path/to/selectize.css') }}">
+    <script src="{{ asset('path/to/selectize.min.js') }}"></script>
+    <script src="{{ asset('js/script.js') }}"></script>
     <title>{{ $title }}</title>
 </head>
 <body class="h-full bg-gray-100">

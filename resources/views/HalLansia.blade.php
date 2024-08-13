@@ -25,6 +25,8 @@
           <th class="border w-20 border-slate-300">No</th>
           <th class="border border-slate-300">NIK</th>
           <th class="border border-slate-300">Nama Lengkap</th>
+          <th class="border border-slate-300">Usia</th>
+          <th class="border border-slate-300">Jenis Kelamin</th>
           <th class="border border-slate-300">Keterangan</th>
           <th class="border border-slate-300">Aksi</th>
         </thead>

@@ -12,13 +12,10 @@
         <h5 class="mt-6 mb-2 lg:mt-3 font-medium">Data</h5>
         <ul class="space-y-6 lg:space-y-2">
           <li>
-            <x-nav-link href="/bumil" :active="request()->is('bumil')">Ibu Hamil</x-nav-link>
-          </li>
-          <li>
             <x-nav-link href="/ibu" :active="request()->is('ibu')">Ibu</x-nav-link>
           </li>
           <li>
-            <x-nav-link href="/balita" :active="request()->is('balita')">Anak</x-nav-link>
+            <x-nav-link href="/anak" :active="request()->is('anak')">Anak</x-nav-link>
           </li>
           <li>
             <x-nav-link href="/lansia" :active="request()->is('lansia')">lansia</x-nav-link>
@@ -29,7 +26,7 @@
         <h5 class="mt-6 mb-2 lg:mt-3 font-medium">Kegiatan</h5>
         <ul class="space-y-6 lg:space-y-2">
           <li>
-            <x-nav-link href="/kegiatan" :active="request()->is('kegiatan')">Tambah Kegiatan</x-nav-link>
+            <x-nav-link href="/kegiatan" :active="request()->is('kegiatan')">Kegiatan</x-nav-link>
           </li>
           <li>
             <x-nav-link href="/pelayanan-bumil" :active="request()->is('pelayanan-bumil')">Pelayanan Ibu Hamil</x-nav-link>

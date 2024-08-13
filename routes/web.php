@@ -1,14 +1,22 @@
 <?php
 
+use App\Http\Controllers\AnakController;
+use App\Http\Controllers\IbuController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Models\kegiatan;
 
-Route::get('/login', function () {
-    return view('login');
-});
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('login', [LoginController::class, 'login']);
+Route::post('logout', [LoginController::class, 'logout']);
+
 
 Route::get('/', function () {
     return view('dashboard', ['title' => 'Dashboard']);
+});
+
+Route::get('/detail-data', function () {
+    return view('detail-data', ['title' => 'Detail Data']);
 });
 
 Route::get('/bumil', function () {
@@ -19,9 +27,9 @@ Route::get('/tambahDataBumil', function () {
     return view('add-bumil', ['title' => 'Tambah Data Ibu Hamil']);
 });
 
-Route::get('/ibu', function () {
-    return view('HalIbu', ['title' => 'Data Ibu']);
-});
+Route::resource('ibu', IbuController::class);
+
+Route::resource('anak', AnakController::class);
 
 Route::get('/tambahDataIbu', function () {
     return view('add-ibu', ['title' => 'Tambah Data Ibu']);
@@ -44,9 +52,6 @@ Route::get('/tambahDataLansia', function () {
 });
 
 
-Route::get('/kegiatan', function () {
-    return view('kegiatan', ['title' => 'Kegiatan Posyandu']);
-});
 
 Route::get('/pelayanan-bumil', function () {
     return view('pelayanan-Bumil', ['title' => 'Pelayanan Ibu Hamil']);

@@ -23,8 +23,9 @@
       <table class="m-2 table-auto min-w-full border-collapse border border-slate-400 rounded-lg overflow-hidden shadow-lg items-center text-center">
         <thead class="bg-">
           <th class="border w-20 border-slate-300">No</th>
-          <th class="border border-slate-300">Nama Ibu</th>
           <th class="border border-slate-300">Nama Anak</th>
+          <th class="border border-slate-300">Usia</th>
+          <th class="border border-slate-300">Jenis Kelamin</th>
           <th class="border border-slate-300">Keterangan</th>
           <th class="border border-slate-300">Aksi</th>
         </thead>
