@@ -1,4 +1,117 @@
-<header class="px-4 py-2 shadow-md bg-white">
+
+<header class="sticky top-0 px-4 py-2 shadow-md bg-white z-10">
+  <!-- Untuk admin -->
+  @if (auth()->user()->is_admin)
+  <div class="drawer">
+    <!-- Drawer toggle input -->
+    <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
+  
+    <!-- Drawer content -->
+    <div class="drawer-content flex flex-col">
+      <!-- Navbar -->
+      <div class="navbar bg-white w-full px-4 py-2">
+        <div class="flex-none lg:hidden">
+          <label for="my-drawer-3" aria-label="open sidebar" class="btn btn-square btn-ghost">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              class="inline-block h-6 w-6 stroke-current">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </label>
+        </div>
+        <div class="mx-2 flex-1 px-2">
+          <!-- Title, hidden when menu is open -->
+          <h1 class="text-xl font-bold tracking-tight text-gray-700">{{ $slot }}</h1>
+        </div>
+        <x-search></x-search>
+      </div>
+    </div>
+  
+    <!-- Sidebar -->
+    <div class="drawer-side">
+      <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
+      <ul class="bg-white min-h-full w-80 p-4">
+        <!-- Sidebar content here -->
+        <ul class="m-2 divide-y">
+          <li class="my-4 lg:mt-3">
+            <x-nav-link route-pattern="dashboard" href="{{ route('dashboard') }}">Dashboard</x-nav-link>
+          </li>
+          <li class="my-4">
+            <h5 class="mt-6 mb-2 lg:mt-3 font-medium text-primary">Data</h5>
+            <ul class="space-y-6 lg:space-y-2">
+              <li class="my-2">
+                <x-nav-link route-pattern="user.*" href="{{ route('user.index') }}">Akun Pengguna</x-nav-link>
+              </li>
+              <li class="my-2">
+                <x-nav-link route-pattern="ibu.*" href="{{ route('ibu.index') }}">Ibu</x-nav-link>
+              </li>
+              <li class="my-2">
+                <x-nav-link route-pattern="anak.*" href="{{ route('anak.index') }}">Bayi dan Balita</x-nav-link>
+              </li>
+              <li class="my-2">
+                <x-nav-link route-pattern="lansia.*|create" href="{{ route('lansia.index') }}">lansia</x-nav-link>
+              </li>
+            </ul>
+          </li>
+          <li class="my-4">
+            <h5 class="mt-6 mb-2 lg:mt-3 font-medium text-primary">Kegiatan</h5>
+            <ul class="space-y-6 lg:space-y-2">
+              <li class="my-2">
+                <x-nav-link route-pattern="kegiatan.*" href="{{ route('kegiatan.index') }}">Data Kegiatan</x-nav-link>
+              </li>
+              <li class="my-2">
+                <x-nav-link route-pattern="pemeriksaan.*" href="{{ route('pemeriksaan.index') }}">Pemeriksaan PTM</x-nav-link>
+              </li>
+            </ul>
+          </li>
+          <li class="my-4">
+            <h5 class="mt-6 mb-2 lg:mt-3 font-medium text-primary">Laporan</h5>
+            <ul class="space-y-6 lg:space-y-2">
+              <li class="my-2">
+                <x-nav-link route-pattern="laporan.*" href="{{ route('laporan.index') }}">Laporan Kegiatan</x-nav-link>
+              </li>
+              <li class="my-2">
+                <x-nav-link href="/laporan-bumil" :active="request()->is('laporan-bumil')">Laporan Ibu Hamil</x-nav-link>
+              </li>
+              <li class="my-2">
+                <x-nav-link href="/laporan-balita" :active="request()->is('laporan-balita')">Laporan Anak</x-nav-link>
+              </li>
+              <li class="my-2">
+                <x-nav-link href="/laporan-lansia" :active="request()->is('laporan-lansia')">Laporan Lansia</x-nav-link>
+              </li>
+            </ul>
+          </li>
+          <li class="my-4">
+            <h5 class="mt-6 mb-2 lg:mt-3 font-medium text-primary">Pengaturan</h5>
+            <ul class="space-y-6 lg:space-y-2">
+              <li class="my-2">
+                <x-nav-link route-pattern="profile" href="{{ route('profile') }}">Profile</x-nav-link>
+              </li>
+              <li class="my-2">
+                <form method="POST" action="{{ route('logout') }}" class="inline">
+                  @csrf
+                  <x-nav-link href="#" :active="request()->is('logout')"
+                              onclick="event.preventDefault(); this.closest('form').submit();">
+                      Sign out
+                  </x-nav-link>
+              </form>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </ul>
+    </div>
+  </div>
+  
+
+  <!-- Untuk pengguna -->
+  @else
   <div class="mx-auto py-4">
     <div x-data="{isOpen: false}" class="relative flex items-center justify-between">
       <!-- Mobile menu button dan judul -->
@@ -16,18 +129,20 @@
         </button>
 
         <!-- Title, hidden when menu is open -->
-        <h1 x-show="!isOpen" class="ml-4 text-xl font-bold tracking-tight text-gray-700 text-center">{{ $slot }}</h1>
+        <h1 x-show="!isOpen" class="ml-4 text-xl font-bold tracking-tight text-gray-700">{{ $slot }}</h1>
       </div>
       
+      <x-search></x-search>
+      
       <!-- Mobile menu, show/hide based on menu state. -->
-      <div x-show="isOpen" id="mobile-menu" class="absolute left-0 top-full mt-2 w-full bg-white shadow-lg rounded-lg z-50">
-        <div class="divide-y pl-8 lg:hidden">
+      <div x-show="isOpen" id="mobile-menu" class="absolute left-0 top-full mt-2 w-full shadow-lg rounded-lg z-50">
+        <div class="divide-y pl-8 lg:hidden bg-white">
           <div class="mt-2 space-y-2 pr-7">
-            <x-nav-link href="/" :active="request()->is('/')">Dashborad</x-nav-link>
+            <x-nav-link route-pattern="dashboard" href="{{ route('dashboard') }}">Dashborad</x-nav-link>
           </div>
           <div x-data="{ isActive: false, open: false}">
             <a href="#" @click="$event.preventDefault(); open = !open" 
-            class="flex items-center p-2 text-gray-800 transition-colors rounded-md dark:text-light hover:bg-primary-100 dark:hover:bg-primary" 
+            class="flex items-center p-1 text-gray-800 transition-colors rounded-md dark:text-light hover:bg-primary-100 dark:hover:bg-primary" 
             :class="{'bg-primary-100 dark:bg-primary': isActive || open}" 
              role="button" aria-haspopup="true" :aria-expanded="(open || isActive) ? 'true' : 'false'">
              <span class="ml-3"> Data </span>
@@ -38,21 +153,29 @@
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                  </svg>
               </span>
             </a>
             <div role="menu" x-show="open" class="mt-2 space-y-2 px-7" aria-label="Data">
-              <x-nav-link href="/ibu" :active="request()->is('ibu')" role="menuitem">Ibu</x-nav-link>
-              <x-nav-link href="/balita" :active="request()->is('balita')">Anak</x-nav-link>
-              <x-nav-link href="/lansia" :active="request()->is('lansia')">lansia</x-nav-link>
+              <ul>
+                <li class="my-2">
+                  <x-nav-link route-pattern="ibu.*" href="{{ route('ibu.index') }}">Ibu</x-nav-link>
+                </li>
+                <li class="my-2">
+                  <x-nav-link route-pattern="anak.*" href="{{ route('anak.index') }}">Bayi dan Balita</x-nav-link>
+                </li>
+                <li class="my-2">
+                  <x-nav-link route-pattern="lansia.*" href="{{ route('lansia.index') }}">Lansia</x-nav-link>
+                </li>
+              </ul>
+          
             </div>
           </div>
           <div x-data="{ isActive: false, open: false }">
             <a href="#" @click="$event.preventDefault(); open = !open"
-              class="flex items-center p-2 text-gray-800 transition-colors rounded-md dark:text-light hover:bg-primary-100 dark:hover:bg-primary"
+              class="flex items-center p-1 text-gray-800 transition-colors rounded-md dark:text-light hover:bg-primary-100 dark:hover:bg-primary"
               :class="{ 'bg-primary-100 dark:bg-primary': isActive || open }"
               role="button" aria-haspopup="true" :aria-expanded="(open || isActive) ? 'true' : 'false'">
               <span class="ml-3"> Kegiatan </span>
@@ -63,18 +186,20 @@
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </span>
             </a>
             <div x-show="open" class="mt-2 space-y-2 px-7" role="menu" arial-label="Kegiatan">
-              <x-nav-link href="/kegiatan" :active="request()->is('kegiatan')">Tambah Kegiatan</x-nav-link>
-              <x-nav-link href="/pelayanan-bumil" :active="request()->is('pelayanan-bumil')">Pelayanan Ibu Hamil</x-nav-link>
-              <x-nav-link href="/pelayanan-balita" :active="request()->is('pelayanan-balita')">Pelayanan Anak</x-nav-link>
-              <x-nav-link href="/pelayanan-lansia" :active="request()->is('pelayanan-lansia')">Pelayanan Lansia</x-nav-link>
-              <x-nav-link href="/laporan-kegiatan" :active="request()->is('laporan-kegiatan')">Laporan Kegiatan</x-nav-link>
+              <ul>
+                <li class="my-2">
+                  <x-nav-link route-pattern="kegiatan.*" href="{{ route('kegiatan.index') }}">Data Kegiatan</x-nav-link>
+                </li>
+                <li class="my-2">
+                  <x-nav-link route-pattern="pemeriksaan.*" href="{{ route('pemeriksaan.index') }}">Pemeriksaan PTM</x-nav-link>
+                </li>
+              </ul>
             </div>
           </div>
           <div x-data="{ isActive: false, open: false }">
@@ -90,16 +215,26 @@
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </span>
             </a>
             <div x-show="open" class="mt-2 space-y-2 px-7" role="menu" arial-label="Laporan">
-              <x-nav-link href="/laporan-bumil" :active="request()->is('laporan-bumil')">Laporan Ibu Hamil</x-nav-link>
-              <x-nav-link href="/laporan-balita" :active="request()->is('laporan-balita')">Laporan Anak</x-nav-link>
-              <x-nav-link href="/laporan-lansia" :active="request()->is('laporan-lansia')">Laporan Lansia</x-nav-link>
+              <ul>
+                <li class="my-2">
+                  <x-nav-link href="/laporan" :active="request()->is('laporan')">Laporan Kegiatan</x-nav-link>
+                </li>
+                <li class="my-2">
+                  <x-nav-link href="/laporan-bumil" :active="request()->is('laporan-bumil')">Laporan Ibu Hamil</x-nav-link>
+                </li>
+                <li class="my-2">
+                  <x-nav-link href="/laporan-balita" :active="request()->is('laporan-balita')">Laporan Anak</x-nav-link>
+                </li>
+                <li class="my-2">
+                  <x-nav-link href="/laporan-lansia" :active="request()->is('laporan-lansia')">Laporan Lansia</x-nav-link>
+                </li>
+              </ul>
             </div>
           </div>
           <div x-data="{ isActive: false, open: false }">
@@ -115,19 +250,31 @@
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
               </span>
             </a>
             <div x-show="open" class="mt-2 space-y-2 px-7" role="menu" arial-label="Pengaturan">
-              <x-nav-link href="/profile" :active="request()->is('profile')">Profile</x-nav-link>
-              <x-nav-link href="#" :active="request()->is('')">Sign out</x-nav-link>
+              <ul>
+                <li class="my-2">
+                  <x-nav-link route-pattern="profile" href="{{ route('profile') }}">Profile</x-nav-link>
+                </li>
+                <li class="my-2">
+                  <form method="POST" action="{{ route('logout') }}" class="inline">
+                    @csrf
+                    <x-nav-link href="#" :active="request()->is('logout')"
+                                onclick="event.preventDefault(); this.closest('form').submit();">
+                        Sign out
+                    </x-nav-link>
+                </form>
+                </li>
+              </ul>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+  @endif
 </header>

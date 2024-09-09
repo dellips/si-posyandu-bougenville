@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('rt');
             $table->string('rw');
             $table->string('no_telp');
-            $table->string('is_hamil');
+            $table->boolean('is_hamil');
             $table->string('bpjs');
             $table->timestamps();
         });

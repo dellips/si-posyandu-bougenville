@@ -1,41 +1,84 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-white">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @vite('resources/css/app.css')
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="{{ asset('path/to/selectize.css') }}">
+    <script src="{{ asset('path/to/selectize.min.js') }}"></script>
     <title>Login</title>
 </head>
 <body class="h-full">
-  <section class="min-h-screen flex items-center justify-center bg-gradient-to-r from-green-400 to-cyan-300">
-    <div class="flex items-center justify-center min-h-screen">
-      <div class="sm:mx-auto sm:w-full sm:max-w-sm md:block hidden m-5 py-11 px-5 rounded-l-lg shadow-md bg-white">
-       <img class="mx-auto h-90 w-auto" src="https://img.freepik.com/vecteurs-libre/illustration-concept-pediatre_114360-8805.jpg?t=st=1718896166~exp=1718899766~hmac=0e02d02cf466578a551a14f23134ca320ee6faff80ec50057e87a139bfc34703&w=740" alt="Posyandu">
+  <section class="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-500 to-fuchsia-400">
+    <div class="flex items-center justify-center min-h-screen py-10">
+      <!-- img section -->
+      <div class="sm:mx-auto sm:w-full sm:max-w-sm p-5 m-3 py-11 md:block hidden rounded-l-lg shadow-md bg-white text-center">
+        <div class="flex items-center space-x-4 pb-10">
+          <img
+            class="mask h-10 w-10"
+            src="/img/logo.png"
+            alt="Logo Posyandu Bougenville"
+          />
+          <img
+            class="mask h-8 w-13"
+            src="/img/Logo-Kementerian-Kesehatan-RI_01.png"
+            alt="Logo Kementerian Kesehatan"
+          />
+          <img
+            class="mask h-8 w-13"
+            src="/img/logo-kota-bandung.png"
+            alt="Logo Kota Bandung"
+          />
+        </div>        
+        <img class="mx-auto w-auto" src="/img/6911014.jpg" alt="Posyandu">
+        <a href="https://www.freepik.com/free-vector/pediatrician-concept-illustration_24237740.htm" class="text-sm text-stone-300">Image by storyset on Freepik</a>
       </div>
 
-      <div class="sm:mx-auto sm:w-full sm:max-w-sm p-10 m-5 rounded-r-lg shadow-md bg-white">
-        <h2 class="mt-10 text-left text-2xl font-bold leading-9 tracking-tight text-gray-900 pb-5">Sistem Informasi Posyandu Bougenville</h2>
-        <form class="space-y-6" action="{{ route('login') }}" method="POST">
-          <div>
-            <label for="username" class="block text-sm font-medium leading-6 text-gray-900">Username</label>
-            <div class="mt-2">
-              <input id="username" name="username" type="text" placeholder="Masukan Username" autocomplete="current-uname" required class="block w-full rounded-lg border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 pl-2 sm:text-sm sm:leading-6">
-            </div>
+      <!-- form section -->
+      <div class="sm:mx-auto sm:w-full sm:max-w-sm p-10 m-5 py-11 rounded-r-lg shadow-lg bg-white">
+        <h2 class="m-1 p-2 text-left text-2xl font-bold leading-9 tracking-tight text-stone-900">Sistem Informasi Posyandu Bougenville</h2>
+        <!-- Alert Error -->
+        <div class="m-1 p-2 pb-20 ">
+          @if ($errors->any())
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded absolute" role="alert">
+            <strong class="font-bold">Terdapat kesalahan!</strong>
+            <ul class="mt-3 list-disc list-inside text-sm text-red-600">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
           </div>
-
+          @endif
+        </div>
+        
+        <form class="space-y-6 text-stone-700" action="{{ route('login') }}" method="POST">
+          @csrf
+          <!-- field username -->
           <div>
-            <div class="flex items-center justify-between">
-              <label for="password" class="block text-sm font-medium leading-6 text-gray-900">Password</label>
-            </div>
-            <div class="mt-2">
-              <input id="password" name="password" type="password" placeholder="Masukan Password" autocomplete="current-password" required class="block w-full rounded-lg border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 pl-2 sm:text-sm sm:leading-6">
-            </div>
+            <label for="username" class="label-text text-stone-700">Username</label>
+            <label class="input input-bordered input-primary flex items-center gap-2 bg-white">
+              <svg class="h-4 w-5 text-stone-600"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>              
+              <input id="username" name="username" type="text" class="grow" placeholder="Masukan Username" required />
+            </label>
           </div>
-
+          <!-- field password -->
           <div>
-            <button type="submit" class="flex w-full justify-center rounded-lg bg-green-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Login</button>
+            <label for="password" class="label-text text-stone-700">Password</label>
+            <label class="input input-bordered input-primary flex items-center gap-2 bg-white relative">
+              <svg class="h-4 w-4 text-stone-600"  fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+              </svg>              
+              <input id="password" name="password" type="password" placeholder="Masukan Password" class="grow" required />
+            </label>
+          </div>
+          <div>
+            <button type="submit" class="btn btn-primary w-full text-white">Login</button>
           </div>
         </form>
       </div>

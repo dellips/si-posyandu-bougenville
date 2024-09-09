@@ -14,16 +14,22 @@ class User extends Authenticatable
     protected $fillable = [
         'username',
         'nik',
-        'name',
+        'nama',
+        'jk',
         'tgl_lahir',
         'alamat',
         'rt',
         'rw',
         'no_telp',
+        'posisi',
+        'is_admin',
         'password',
     ];
 
-    protected $guarded = ['is_admin'];
+    public function isAdmin()
+    {
+        return $this->is_admin;
+    }
 
     /**
      * The attributes that should be hidden for serialization.

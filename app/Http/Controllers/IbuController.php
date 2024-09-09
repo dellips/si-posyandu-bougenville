@@ -5,14 +5,18 @@ namespace App\Http\Controllers;
 use App\Models\Ibu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\Rule;
 
 class IbuController extends Controller
 {
     // mengambil seluruh data ibu keseluruhan
-    public function index()
+    public function index(Request $request)
     {
-        $ibus = Ibu::all();
-        return view('ibu.index', compact('ibus'));
+        $sortColumn = $request->input('sort', 'nama');
+        $sortDirection = $request->input('direction', 'asc');
+
+        $ibus = Ibu::orderBy($sortColumn, $sortDirection)->get();
+        return view('ibu.index', compact('ibus', 'sortColumn', 'sortDirection'));
     }
 
     //menampilkan form untuk membuat data baru
@@ -30,42 +34,55 @@ class IbuController extends Controller
             'alamat' => 'required|string|max:255',
             'rt' => 'required|string|max:3',
             'rw' => 'required|string|max:3',
-            'no_telp' => 'nullable|string|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
-            'is_hamil' => 'required|string',
+            'no_telp' => 'nullable|string|regex:/^([0-9\s\-\+\(\)]*)$/|digits_between:10,13',
+            'is_hamil' => 'required|boolean',
             'bpjs' => 'required|string',
         ]);
 
-        // Menggunakan mass assignment
+        
         Ibu::create($validatedData);
         return redirect()->route('ibu.index')->with('success', 'Data Ibu berhasil disimpan.');
     }
 
     public function show(Ibu $ibu)
     {
-        //tambahan menghitung usia
+        $ibu = Ibu::with('anak')->findOrFail($ibu->id);
         $usia = Carbon::parse($ibu->tgl_lahir)->age;
+
+        if (!$ibu) {
+            return redirect()->route('ibu.index')->with('error', 'Data Ibu tidak ditemukan.');
+        }
         return view('ibu.show', compact('ibu', 'usia'));
     }
 
     public function edit(Ibu $ibu)
     {
+        if (!$ibu->exists) {
+            return redirect()->route('ibu.index')->with('error', 'Data Ibu tidak ditemukan.');
+        }
         return view('ibu.form', compact('ibu'));
     }
 
-    public function update(Request $request, Ibu $ibu)
+    public function update(Request $request, $id)
     {
 
         $validatedData = $request->validate([
-            'nik' => 'required|string|digits:16',
+            'nik' => ['required', 'string', 'digits:16', Rule::unique('ibus', 'nik')->ignore($id)],
             'nama' => 'required|string|max:255',
             'tgl_lahir' => 'required|date',
             'alamat' => 'required|string|max:255',
-            'rt' => 'required|string|max:3',
-            'rw' => 'required|string|max:3',
-            'no_telp' => 'nullable|string|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
-            'is_hamil' => 'required|string',
-            'bpjs' => 'required|string',
+            'rt' => 'nullable|string|max:3',
+            'rw' => 'nullable|string|max:3',
+            'no_telp' => 'nullable|string|regex:/^([0-9\s\-\+\(\)]*)$/|digits_between:10,13',
+            'is_hamil' => 'required|boolean',
+            'bpjs' => 'nullable|string',
         ]);
+        
+        $ibu = Ibu::findOrFail($id);
+
+        if (!$ibu->exists) {
+            return redirect()->route('ibu.index')->with('error', 'Data Ibu tidak ditemukan.');
+        }
 
         $ibu->update($validatedData);
         return redirect()->route('ibu.show', $ibu->id)->with('success', 'Data Ibu berhasil diperbarui.');
@@ -76,4 +93,5 @@ class IbuController extends Controller
         $ibu->delete();
         return redirect()->route('ibu.index')->with('success', 'Data Ibu berhasil dihapus.');
     }
+
 }

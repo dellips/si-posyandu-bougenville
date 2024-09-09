@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en" class="h-full bg-gray-100" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +7,13 @@
     @vite('resources/css/app.css')
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="{{ asset('path/to/selectize.css') }}">
     <script src="{{ asset('path/to/selectize.min.js') }}"></script>
-    <script src="{{ asset('js/script.js') }}"></script>
+    <script src="https://kit.fontawesome.com/943485bfd1.js" crossorigin="anonymous"></script>
     <title>{{ $title }}</title>
 </head>
-<body class="h-full bg-gray-100">
+<body>
   <x-navbar></x-navbar>
     <div class="lg:pl-[18.5rem]">
       <div class="max-w-3x1 mx-auto xl:max-w-none xl:ml-0 ">

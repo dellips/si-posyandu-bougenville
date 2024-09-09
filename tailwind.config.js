@@ -16,6 +16,17 @@ export default {
     },
   },
   plugins: [
+    require('daisyui'),
     //require('@tailwindcss/forms'),
   ],
+  daisyui: {
+    themes: [
+      {
+        light: {
+          ...require("daisyui/src/theming/themes")["light"],
+          primary: "#793ef9",
+        },
+      },
+    ],
+  },
 }

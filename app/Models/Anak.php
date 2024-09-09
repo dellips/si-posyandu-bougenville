@@ -10,20 +10,23 @@ class Anak extends Model
 {
     use HasFactory;
 
+    public function sasaran(){
+        return $this->belongsTo(Sasaran::class);
+    }
+
     protected $fillable = [
         'nik',
         'nama',
-        'nm_ibu',
         'nm_ayah',
         'tgl_lahir',
         'bb_lahir',
         'tb_lahir',
-        'anak_ke',
+        'jk',
+        'jns_persalinan',
+        'jns_kelahiran',
+        'sasaran_id',
     ];
 
-    public function ibu(){
-        return $this->belongsTo(Ibu::class);
-    }
 
 }
 

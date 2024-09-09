@@ -13,16 +13,18 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('username')->unique();
+            $table->string('username');
             $table->string('password');
             $table->boolean('is_admin')->default(false);
             $table->string('nik');
             $table->string('nama');
+            $table->string('jk');
             $table->date('tgl_lahir');
             $table->string('alamat');
             $table->string('rt');
             $table->string('rw');
             $table->string('no_telp');
+            $table->string('posisi');
             $table->rememberToken();
             $table->timestamps();
         });
@@ -43,9 +45,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('users');

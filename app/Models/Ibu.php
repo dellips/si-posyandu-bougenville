@@ -9,6 +9,11 @@ class Ibu extends Model
 {
     use HasFactory;
 
+    public function anak(){
+        return $this->hasMany(Anak::class);
+    }
+
+
     protected $fillable = [
         'nik',
         'nama',
@@ -20,5 +25,11 @@ class Ibu extends Model
         'is_hamil',
         'bpjs',
     ];
+    
+    public function getStatusHamilAttribute()
+    {
+        return $this->is_hamil ? 'Hamil' : 'Tidak Hamil';
+    }
+
 }
 

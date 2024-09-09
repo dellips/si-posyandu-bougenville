@@ -2,20 +2,27 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Anak;
 use App\Models\Ibu;
+use App\Models\Anak;
+use App\Models\Sasaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AnakController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $anaks = Anak::with('ibu')->get();
-        return view('anak.index', compact('anaks'));
+        $sortColumn = $request->input('sort', 'nama');
+        $sortDirection = $request->input('direction', 'asc');
+
+        $anaks = Anak::with('sasaran')
+            ->orderBy($sortColumn, $sortDirection)
+            ->get();
+        return view('sasaran.index', compact('anaks', 'sortColumn', 'sortDirection'));
     }
 
     /**
@@ -23,8 +30,8 @@ class AnakController extends Controller
      */
     public function create()
     {
-        $ibu = Ibu::all();
-        return view('anak.form', compact('ibu'));
+        $sasaran = Sasaran::where('kategori', 'Ibu')->get();
+        return view('anak.form', compact('sasaran'));
     }
 
     /**
@@ -33,20 +40,20 @@ class AnakController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'nik' => 'nullable|string|max:255',
+            'nik' => 'nullable|string|digits:16|unique:anaks,nik',
             'nama' => 'required|string|max:255',
             'nm_ayah' => 'required|string|max:255',
             'tgl_lahir' => 'required|date',
             'bb_lahir' => 'required|numeric',
             'tb_lahir' => 'required|numeric',
             'jk' => 'required|string',
-            'anak_ke' => 'required|string|max:3',
             'jns_persalinan' => 'required|string',
-            'ibu_id' => 'required|exists:ibus,id',
+            'jns_kelahiran' => 'required|string',
+            'sasaran_id' => 'required|exists:sasarans,id',
         ]);
 
         Anak::create($validatedData);
-        return redirect()->route('anak.index')->with('success', 'Data Anak berhasil disimpan.');
+        return redirect()->route('sasaran.index')->with('success', 'Data Anak berhasil disimpan.');
     }
 
     /**
@@ -54,8 +61,11 @@ class AnakController extends Controller
      */
     public function show(Anak $anak)
     {
-        $usia = Carbon::parse($anak->tgl_lahir)->age;
-        return view('anak.index', compact('anak', 'usia'));
+        $anak = Anak::with('sasaran')->findOrFail($anak->id);
+        if (!$anak) {
+            return redirect()->route('anak.index')->with('error', 'Data Anak tidak ditemukan.');
+        }
+        return view('sasaran.show', compact('anak'));
     }
 
     /**
@@ -63,30 +73,40 @@ class AnakController extends Controller
      */
     public function edit(Anak $anak)
     {
-        $ibu = Ibu::all();
-        return view('anak.form', compact('anak', 'ibu'));
+        $sasaran = Sasaran::where('kategori', 'Ibu')->get();
+
+        if (!$anak) {
+            return redirect()->route('sasaran.index')->with('error', 'Data Anak tidak ditemukan.');
+        }
+        return view('anak.form', compact('anak', 'sasaran'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Anak $anak)
+    public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'nik' => 'nullable|string|max:255',
+            'nik' => 'nullable|string|digits:16|unique:anaks,nik'.$id,
             'nama' => 'required|string|max:255',
             'nm_ayah' => 'required|string|max:255',
             'tgl_lahir' => 'required|date',
-            'bb_lahir' => 'required|numberic',
-            'tb_lahir' => 'required|numberic',
+            'bb_lahir' => 'required|numeric',
+            'tb_lahir' => 'required|numeric',
             'jk' => 'required|string',
-            'anak_ke' => 'required|string|max:3',
             'jns_persalinan' => 'required|string',
-            'ibu_id' => 'required|exists:ibus,id',
+            'jns_kelahiran' => 'required|string',
+            'sasaran_id' => 'required|exists:sasarans,id',
         ]);
 
+        $anak = Anak::findOrFail($id);
+
+        if (!$anak) {
+            return redirect()->route('sasaran.index')->with('error', 'Data Anak tidak ditemukan.');
+        }
+
         $anak->update($validatedData);
-        return redirect()->route('anak.show', $anak->id)->with('success', 'Data Anak berhasil diperbarui.');
+        return redirect()->route('sasaran.show', $anak->id)->with('success', 'Data Anak berhasil diperbarui.');
     }
 
     /**
@@ -95,6 +115,6 @@ class AnakController extends Controller
     public function destroy(Anak $anak)
     {
         $anak->delete();
-        return redirect()->route('anak.index')->with('success', 'Data Ibu berhasil dihapus.');
+        return redirect()->route('sasaran.index')->with('success', 'Data Ibu berhasil dihapus.');
     }
 }

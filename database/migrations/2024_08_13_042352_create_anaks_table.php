@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -11,6 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');  // Disable foreign key checks
+
+
         Schema::create('anaks', function (Blueprint $table) {
             $table->id();
             $table->string('nik')->nullable();
@@ -20,11 +24,14 @@ return new class extends Migration
             $table->date('tgl_lahir');
             $table->decimal('bb_lahir', 4, 2);
             $table->decimal('tb_lahir', 4, 2);
-            $table->string('anak_ke');
             $table->string('jns_persalinan');
-            $table->foreignId('ibu_id')->constrained('ibus')->onDelete('cascade');
+            $table->string('jns_kelahiran');
+            $table->foreignId('sasaran_id')->nullable()->constrained('sasarans')->onDelete('cascade');
             $table->timestamps();
         });
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');  // Enable foreign key checks
+
     }
 
     /**
@@ -32,6 +39,11 @@ return new class extends Migration
      */
     public function down(): void
     {
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');  // Disable foreign key checks
+
         Schema::dropIfExists('anaks');
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');  // Enable foreign key checks
+
     }
 };
