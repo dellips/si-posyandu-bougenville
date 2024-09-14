@@ -9,7 +9,7 @@
                     <line x1="5" y1="12" x2="9" y2="16" />  
                     <line x1="5" y1="12" x2="9" y2="8" /></svg>
             </a>
-            <p class="font-semibold text-lg uppercase text-violet-600">Form {{ isset($pemeriksaan) ? 'Ubah' : 'Tambah' }} Akun</p>
+            <p class="font-semibold text-lg uppercase text-violet-600"> {{ isset($pemeriksaan) ? 'Ubah' : 'Tambah' }} Pemeriksaan PTM</p>
         </div>
 
         <!-- alert error -->
@@ -306,7 +306,7 @@
                 <div class="mb-4">
                     <div class="flex-initial w-1/2">
                         <label for="lk" class="block text-gray-800 font-semibold mb-2">Lingkar Kepala</label>
-                        <input type="text" id="lk" name="lk" value="{{ old('lk', isset($pemeriksaan) ? $pemeriksaan->lp : '') }}" placeholder="000.0" class="w-2/3 px-4 py-2 border rounded-md focus:outline-none focus:border-purple-500">
+                        <input type="text" id="lk" name="lk" value="{{ old('lk', isset($pemeriksaan) ? $pemeriksaan->lk : '') }}" placeholder="000.0" class="w-2/3 px-4 py-2 border rounded-md focus:outline-none focus:border-purple-500">
                          cm
                     </div>
                 </div>

@@ -60,12 +60,57 @@ class Pemeriksaan extends Model
         }
     }
 
+    public function getPerubahanBeratAttribute()
+{
+    // Ambil pemeriksaan terakhir berdasarkan sasaran_id dan tgl_kegiatan
+    $pemeriksaan_terakhir = Pemeriksaan::where('sasaran_id', $this->sasaran_id)
+        ->join('kegiatans', 'pemeriksaans.kegiatan_id', '=', 'kegiatans.id') // Join dengan tabel kegiatans
+        ->orderBy('kegiatans.tgl_kegiatan', 'desc') // Urutkan berdasarkan tgl_kegiatan dari tabel kegiatans
+        ->select('pemeriksaans.*') // Pilih semua kolom dari tabel pemeriksaans
+        ->first();
+
+    $pemeriksaan_sebelumnya = Pemeriksaan::where('sasaran_id', $this->sasaran_id)
+        ->join('kegiatans', 'pemeriksaans.kegiatan_id', '=', 'kegiatans.id') // Join dengan tabel kegiatans
+        ->orderBy('kegiatans.tgl_kegiatan', 'desc') // Urutkan berdasarkan tgl_kegiatan dari tabel kegiatans
+        ->skip(1)
+        ->select('pemeriksaans.*') // Pilih semua kolom dari tabel pemeriksaans
+        ->first();
+
+    // Perhitungan perubahan berat seperti sebelumnya
+    if ($pemeriksaan_terakhir && !$pemeriksaan_sebelumnya) {
+        return [
+            'perubahan' => 0,
+            'status' => 'tetap',
+            'berat_sekarang' => $pemeriksaan_terakhir->bb,
+            'berat_sebelumnya' => $pemeriksaan_terakhir->bb
+        ];
+    }
+
+    if ($pemeriksaan_terakhir && $pemeriksaan_sebelumnya) {
+        $beratSekarang = $pemeriksaan_terakhir->bb;
+        $beratSebelumnya = $pemeriksaan_sebelumnya->bb;
+
+        $perubahan = $beratSekarang - $beratSebelumnya;
+
+        $status = $perubahan > 0 ? 'naik' : ($perubahan < 0 ? 'turun' : 'tetap');
+
+        return [
+            'perubahan' => $perubahan,
+            'status' => $status,
+            'berat_sekarang' => $beratSekarang,
+            'berat_sebelumnya' => $beratSebelumnya
+        ];
+    }
+
+    return null; // Jika tidak ada data
+}
+
     public function sasaran()
 {
     return $this->belongsTo(Sasaran::class, 'sasaran_id');
 }
 
-public function anak()
+    public function anak()
 {
     return $this->belongsTo(Anak::class, 'anak_id');
 }

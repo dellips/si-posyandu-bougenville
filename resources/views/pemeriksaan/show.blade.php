@@ -28,44 +28,167 @@
         <!-- garis -->
        <div class="divider"></div>
 
-        <h4 class="font-bold">Data pemeriksaan atas nama: </h4>
-        <h4 class="mx-6 p-2 font-semibold text-primary">{{ $pemeriksaan->sasaran ? $pemeriksaan->sasaran->nama : ($pemeriksaan->anak ? $pemeriksaan->anak->nama : '-') }}</h4>
+        <h4 class="font-bold mb-4">Data pemeriksaan atas nama: </h4>
+        @php
+            $url = $pemeriksaan->sasaran ? route('sasaran.show', $pemeriksaan->sasaran->id) : ($pemeriksaan->anak ? route('anak.show', $pemeriksaan->anak->id) : '#');
+            $nama = $pemeriksaan->sasaran ? $pemeriksaan->sasaran->nama : ($pemeriksaan->anak ? $pemeriksaan->anak->nama : '-');
+        @endphp
+        <!-- menuju sasaran detail --> 
+        <a href="{{ $url }}" class="mx-6 p-2 font-semibold text-primary hover:text-violet-800">
+            {{ $nama }}
+        </a>
 
-        <div role="tablist" class="tabs tabs-bordered">
+        <div role="tablist" class="tabs tabs-bordered mt-4">
             <input type="radio" name="my_tabs_1" role="tab" class="tab" aria-label="{{ $pemeriksaan->kegiatan->nm_kegiatan }}" checked="checked"/>
             <div role="tabpanel" class="tab-content p-1">
                 <div class="collapse collapse-arrow bg-transparent text-stone-800">
                     <input type="radio" name="my-accordion-1" checked="checked"/>
                     <div class="collapse-content">
-                        <table class=" mx-4 table-auto text-left">
-                            <tbody>
-                                <tr>
-                                    <th class="w-1/2 py-1">Berat Badan</th>
-                                    <td class="px-2 py-1">:</td>
-                                    <td class="px-4 py-1">{{ $pemeriksaan->bb }} kg</td>
-                                </tr>
-                                <tr>
-                                    <th class="w-1/2 py-1">Tinggi Badan</th>
-                                    <td class="px-2 py-1">:</td>
-                                    <td class="px-4 py-1">{{ $pemeriksaan->tb }} cm</td>
-                                </tr>
-                                <tr>
-                                    <th class="w-1/2 py-1">Lingkar Perut</th>
-                                    <td class="px-2 py-1">:</td>
-                                    <td class="px-4 py-1">{{ $pemeriksaan->lp }} cm</td>
-                                </tr>
-                                <tr>
-                                    <th class="w-1/2 py-1">Tekanan Darah</th>
-                                    <td class="px-2 py-1">:</td>
-                                    <td class="px-4 py-1">{{ $pemeriksaan->sistolik }}/{{ $pemeriksaan->diastolik }}</td>
-                                </tr>
-                                <tr>
-                                    <th class="w-1/2 py-1">Keteranagn</th>
-                                    <td class="px-2 py-1">:</td>
-                                    <td class="px-4 py-1">{{ $pemeriksaan->imt }} dengan keterangan {{ $pemeriksaan->keterangan }}</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        @if ($pemeriksaan->anak)
+                    <!-- Tampilkan data untuk Anak -->
+                    <table class="table-fixed m-4 mb-10 text-left w-3/4">
+                        <tbody>
+                            <tr>
+                                <th class="py-1">Berat Badan</th>
+                                <th class="py-1">Tinggi Badan</th>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-1">{{ $pemeriksaan->bb }} kg</td>
+                                <td class="px-4 py-1">{{ $pemeriksaan->tb }} cm</td>
+                            </tr>
+                            <tr>
+                                <th class="py-1">Lingkar Kepala</th>
+                                <th class="py-1">Lingkar Lengan Atas</th>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-1">{{ $pemeriksaan->lk }} cm</td>
+                                <td class="px-4 py-1">{{ $pemeriksaan->lila }} cm</td>
+                            </tr>
+                            <tr>
+                                <th class="py-1">Panjang Tangan Atas</th>
+                                <th class="py-1">Perubahan Berat</th>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-1">{{ $pemeriksaan->lk }} cm</td>
+                                <td class="px-4 py-1">
+                                    @php
+                                        $perubahanBerat = $pemeriksaan->perubahan_berat; 
+                                    @endphp
+                                    @if($perubahanBerat)
+                                        {{ $perubahanBerat['perubahan'] }}
+                                    @else
+                                        Tidak Ada Data
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="py-1">Status Perubahan Berat</th>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-1">
+                                    @php
+                                        $perubahanBerat = $pemeriksaan->perubahan_berat; 
+                                    @endphp
+                                    @if($perubahanBerat)
+                                        {{ ucfirst($perubahanBerat['status']) }}
+                                    @else
+                                        Tidak Ada Data
+                                    @endif
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- table pemberian -->
+                    <table class="table-fixed m-4 mb-10 text-left w-1/4">
+                        <tbody>
+                            <tr>
+                                <th class="text-lg">Pemberian</th>
+                            </tr>
+                            <tr>
+                                <td>Vitamin A</td>
+                                <td>: {{ $pemeriksaan->vit_a }}</td>
+                            </tr>
+                            <tr>
+                                <td>Obat Cacing</td>
+                                <td>: {{ $pemeriksaan->obat_cacing }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                @elseif ($pemeriksaan->sasaran)
+                    <!-- Tampilkan data untuk Sasaran -->
+                    <table class="table-fixed m-4 mb-10 text-left w-3/4">
+                        <tbody>
+                            <tr>
+                                <th class="py-1">Berat Badan</th>
+                                <th class="py-1">Tinggi Badan</th>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-1">{{ $pemeriksaan->bb }} kg</td>
+                                <td class="px-4 py-1">{{ $pemeriksaan->tb }} cm</td>
+                            </tr>
+                            <tr>
+                                <th class="py-1">Lingkar Perut</th>
+                                <th class="py-1">Tekanan Darah</th>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-1">{{ $pemeriksaan->lp }} cm</td>
+                                <td class="px-4 py-1">{{ $pemeriksaan->sistolik }}/{{ $pemeriksaan->diastolik }}</td>
+                            </tr>
+                            <tr>
+                                <th class="py-1">Indeks Massa Tubuh (IMT)</th>
+                                <th class="py-1">Perubahan Berat</th>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-1">{{ $pemeriksaan->keterangan }}</td>
+                                <td class="px-4 py-1">
+                                    @php
+                                        $perubahanBerat = $pemeriksaan->perubahan_berat; 
+                                    @endphp
+                                    @if($perubahanBerat)
+                                        {{ $perubahanBerat['perubahan'] }}
+                                    @else
+                                        Tidak Ada Data
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <th></th>
+                                <th class="py-1">Status Perubahan Berat</th>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td class="px-4 py-1">
+                                    @php
+                                        $perubahanBerat = $pemeriksaan->perubahan_berat; 
+                                    @endphp
+                                    @if($perubahanBerat)
+                                        {{ ucfirst($perubahanBerat['status']) }}
+                                    @else
+                                        Tidak Ada Data
+                                    @endif
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- table pemberian -->
+                    <table class="table-fixed m-4 mb-10 text-left w-1/4">
+                        <tbody>
+                            <tr>
+                                <th class="text-lg">Pemberian</th>
+                            </tr>
+                            <tr>
+                                <td>Vitamin A</td>
+                                <td>: {{ $pemeriksaan->vit_a }}</td>
+                            </tr>
+                            <tr>
+                                <td>Kapsul Penambah Darah</td>
+                                <td>: {{ $pemeriksaan->tambah_darah }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                @endif
                         <!-- button aksi -->
                         <div class="join flex justify-end w-1/2">
                             <a href="{{ route('pemeriksaan.edit', $pemeriksaan->id) }}" class="btn btn-info join-item">
@@ -89,8 +212,14 @@
                     </div>
                 </div>
         </div>
-
-
-        
     </section>
 </x-layout>
+
+<script>
+     // Jika ada pesan 'success' di session, tampilkan modal
+     @if (session('success'))
+        window.onload = function() {
+            document.getElementById('success_modal').showModal();
+        }
+    @endif
+</script>

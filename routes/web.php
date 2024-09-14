@@ -20,20 +20,9 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout')->midd
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 
-Route::get('lansia/{lansia}/edit', [LansiaController::class, 'edit'])->name('lansia.edit')->middleware('auth');
-
-Route::get('lansia/{lansia}', [LansiaController::class, 'show'])->name('lansia.show');
-
-Route::get('/lansia/create', [LansiaController::class, 'create'])->name('lansia.form');
-
 Route::get('user/{user}/edit', [UserController::class, 'edit'])->name('user.edit')->middleware('auth');
 
-Route::resource('lansia', LansiaController::class)->middleware('auth')->except(['create']);
-
-Route::resource('ibu', IbuController::class)->middleware('auth');
-
 Route::resource('anak', AnakController::class)->middleware('auth');
-
 
 Route::resource('kegiatan', KegiatanController::class)->middleware('auth');
 
@@ -69,27 +58,12 @@ Route::get('/sasaran/filter', [SasaranController::class, 'filter']);
 
 Route::get('/pemeriksaan/filter', [PemeriksaanController::class, 'filter'])->name('pemeriksaan.filter');
 
-
-
-
 Route::get('/profile', function () {
     return view('profile', ['title' => 'Profile']);
 })->name('profile')->middleware('auth');
 
 Route::get('/create', function () {
     return view('tambah-lansia' );
-})->middleware('auth');
-
-Route::get('/pelayanan-bumil', function () {
-    return view('pelayanan-Bumil', ['title' => 'Pelayanan Ibu Hamil']);
-})->middleware('auth');
-
-Route::get('/pelayanan-balita', function () {
-    return view('Pelayanan-Balita', ['title' => 'Pelayanan Balita']);
-})->middleware('auth');
-
-Route::get('/pelayanan-lansia', function () {
-    return view('pelayanan-Lansia', ['title' => 'Pelayanan Lansia']);
 })->middleware('auth');
 
 Route::get('/laporan-kegiatan', function () {

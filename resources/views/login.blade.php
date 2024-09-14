@@ -20,7 +20,7 @@
         <div class="flex items-center space-x-4 pb-10">
           <img
             class="mask h-10 w-10"
-            src="/img/logo.png"
+            src="/img/logo-posyandu.png"
             alt="Logo Posyandu Bougenville"
           />
           <img

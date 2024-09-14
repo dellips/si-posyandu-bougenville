@@ -147,10 +147,10 @@ class UserController extends Controller
     $users = User::query();
 
     if ($filter === 'is_admin') {
+        // jika admin
         $users->where('is_admin', true)
               ->whereIn('posisi', ['Admin', 'Ketua', 'Wakil Ketua', 'Sekertaris', 'Bendahara', 'Anggota']);
     } else {
-        // Handle Kader Posyandu, assuming non-admin users with specific roles
         $users->whereIn('posisi', ['Ketua', 'Wakil Ketua', 'Sekertaris', 'Bendahara', 'Anggota']);
     }
 

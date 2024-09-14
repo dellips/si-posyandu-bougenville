@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Ibu;
 use App\Models\Anak;
-use App\Models\Lansia;
+use App\Models\Sasaran;
 use App\Models\Kegiatan;
 use App\Models\Pemeriksaan;
-use App\Models\Sasaran;
 use Illuminate\Http\Request;
 
 class PemeriksaanController extends Controller
@@ -17,6 +15,7 @@ class PemeriksaanController extends Controller
 {
     $kegiatans = Kegiatan::all();
     $pemeriksaans = Pemeriksaan::with(['sasaran', 'anak'])->get();
+    
     return view('pemeriksaan.index', compact('pemeriksaans', 'kegiatans'));
 }
 
@@ -68,13 +67,11 @@ class PemeriksaanController extends Controller
 
 
     public function show($id)
-{
-    $pemeriksaan = Pemeriksaan::find($id);
-    return view('pemeriksaan.show', compact('pemeriksaan'));
-}
-
-
-
+    {
+        // Ambil pemeriksaan berdasarkan id
+        $pemeriksaan = Pemeriksaan::find($id);
+        return view('pemeriksaan.show', compact('pemeriksaan'));
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -120,12 +117,8 @@ class PemeriksaanController extends Controller
             'kegiatan_id' => 'required|exists:kegiatans,id',
         ]);
 
-        if (!$pemeriksaan) {
-            return redirect()->route('pemeriksaan.index')->with('error', 'Data Pemeriksaan tidak ditemukan.');
-        }
-
         $pemeriksaan->update($validateData);
-        return redirect()->route('pemeriksaan.show')->with('success', 'Data Pemeriksaan berhasil disimpan.');
+        return redirect()->route('pemeriksaan.show', $pemeriksaan->id)->with('success', 'Data Pemeriksaan berhasil disimpan.');
     }
 
     /**
@@ -170,36 +163,84 @@ class PemeriksaanController extends Controller
     return ['imt' => round($imt, 2), 'keterangan' => $keterangan];
 }
 
-    public function hitungIMTabak($beratBadanLahir, $usia){
+public function hitungPerubahanBerat($pemeriksaan)
+    {
+        // Ambil pemeriksaan terakhir dan sebelumnya berdasarkan sasaran_id dan tgl_kegiatan
+        $pemeriksaan_terakhir = Pemeriksaan::where('sasaran_id', $pemeriksaan->sasaran_id)
+            ->orderBy('kegiatan.tgl_kegiatan', 'desc')
+            ->first();
 
+        $pemeriksaan_sebelumnya = Pemeriksaan::where('sasaran_id', $pemeriksaan->sasaran_id)
+            ->orderBy('kegiatan.tgl_kegiatan', 'desc')
+            ->skip(1)
+            ->first();
+
+        // Jika tidak ada data pemeriksaan sebelumnya
+        if ($pemeriksaan_terakhir && !$pemeriksaan_sebelumnya) {
+            return [
+                'perubahan' => 0,
+                'status' => 'tetap',
+                'berat_sekarang' => $pemeriksaan_terakhir->bb,
+                'berat_sebelumnya' => $pemeriksaan_terakhir->bb
+            ];
+        }
+
+        if ($pemeriksaan_terakhir && $pemeriksaan_sebelumnya) {
+            $beratSekarang = $pemeriksaan_terakhir->bb;
+            $beratSebelumnya = $pemeriksaan_sebelumnya->bb;
+
+            $perubahan = $beratSekarang - $beratSebelumnya;
+
+            // Tentukan status kenaikan/penurunan berat badan
+            $status = $perubahan > 0 ? 'naik' : ($perubahan < 0 ? 'turun' : 'tetap');
+
+            return [
+                'perubahan' => $perubahan,
+                'status' => $status,
+                'berat_sekarang' => $beratSekarang,
+                'berat_sebelumnya' => $beratSebelumnya
+            ];
+        }
+
+        return null; // Jika tidak ada data
     }
 
     public function filter(Request $request)
 {
+    // Ambil parameter dari request
+    $kegiatanId = $request->input('kegiatan');
+    $kategori = $request->input('kategori');
+
+    // Buat query untuk memfilter data
     $query = Pemeriksaan::query();
 
-    if ($request->kategori) {
-        $query->whereHas('sasaran', function ($q) use ($request) {
-            $q->where('kategori', $request->kategori);
-        });
+    // Filter berdasarkan kegiatan jika ada
+    if (!empty($kegiatanId)) {
+        $query->where('kegiatan_id', $kegiatanId);
     }
 
-    if ($request->nama) {
-        $query->whereHas('sasaran', function ($q) use ($request) {
-            $q->where('nama', 'like', '%' . $request->nama . '%');
-        });
+    // Filter berdasarkan kategori jika ada
+    if (!empty($kategori)) {
+        if ($kategori == 'Anak') {
+            $query->whereHas('anak');
+        } else {
+            $query->whereHas('sasaran', function ($q) use ($kategori) {
+                $q->where('kategori', $kategori);
+            });
+        }
     }
 
-    if ($request->kegiatan) {
-        $query->where('kegiatan_id', $request->kegiatan);
+    // Ambil data pemeriksaan dengan relasi sasaran dan anak
+    $pemeriksaans = $query->with(['sasaran', 'anak'])->get();
+
+    // Kembalikan data sebagai JSON untuk AJAX
+    if ($request->ajax()) {
+        return response()->json($pemeriksaans);
     }
 
-    $pemeriksaans = $query->with('sasaran', 'anak')->get(); // Pastikan relasi dengan sasaran dan anak sudah di-load
-
-    return response()->json($pemeriksaans);
+    // Jika bukan AJAX, kembalikan ke view biasa
+    return view('pemeriksaan.index', compact('pemeriksaans'));
 }
-
-
 
 
 
