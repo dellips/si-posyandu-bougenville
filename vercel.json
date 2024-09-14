@@ -30,15 +30,5 @@
         "DB_PORT": "3306",
         "DB_DATABASE": "db_posyandu",
         "DB_USERNAME": "root"
-    },
-    "builds": [
-    {
-      "src": "api/index.php",
-      "use": "@vercel/php",
-      "config": {
-        "buildCommand": "apt-get update && apt-get install -y libssl-dev && vercel build"
-        "runtime": "php@8.0"
-      }
     }
-  ]
 }
